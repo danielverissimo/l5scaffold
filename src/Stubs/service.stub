@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Services;
+
+use App\Repositories\{{Model}}RepositoryInterface;
+use App\Traits\ServiceTrait;
+
+class {{Model}}Service implements {{Model}}ServiceInterface
+{
+    use ServiceTrait;
+
+    public $rules = [
+    ];
+
+    public function __construct({{Model}}RepositoryInterface ${{models}})
+    {
+        $this->items = ${{models}};
+    }
+
+}

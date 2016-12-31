@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Providers;
+
+use App\Repositories\{{Model}}Repository;
+use App\Services\{{Model}}Service;
+use Illuminate\Support\ServiceProvider;
+
+class {{Model}}ServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+
+        $this->app->bind('\App\Repositories\{{Model}}RepositoryInterface', function($app)
+        {
+            return new {{Model}}Repository($app);
+        });
+
+        $this->app->bind('\App\Services\{{Model}}ServiceInterface', function($app)
+        {
+            return new {{Model}}Service(new {{Model}}Repository($app));
+        });
+
+    }
+}

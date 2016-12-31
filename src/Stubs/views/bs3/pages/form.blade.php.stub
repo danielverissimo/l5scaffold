@@ -1,0 +1,39 @@
+@extends('layouts.app')
+
+@section('content')
+
+    <section class="panel panel-default panel-tabs">
+        {!! Form::model($item, ['url' => '{{models}}', $item->id]) !!}
+
+            @include('partials.header_form', ['submitButtonText' => 'Salvar', 'deleteButtonText' => 'Excluir'])
+
+            <div class="panel-body">
+
+                <div role="tabpanel">
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="active" role="presentation">
+                            <a href="#general" aria-controls="general" role="tab" data-toggle="tab">
+                                {{Models}}
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div role="tabpanel" class="tab-pane fade in active" id="general">
+
+                            {{form_fields_fillable}}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {!! Form::close() !!}
+    </section>
+
+@endsection

@@ -1,4 +1,9 @@
-<div class="form-group">
-	<label for="{{field.name}}-field">{{field.Name}}</label>
-	<input class="form-control" type="text" name="{{field.name}}" id="{{field.name}}-field" value="{{ old('{{field.name}}', ${{model}}->{{field.name}} ) }}" />
+<div class="form-group {{ $errors->has('{{field.name}}') ? 'has-error' : '' }}">
+
+    {!! Form::label('{{field.name}}', '{{field.Name}}:') !!}
+    {{ Form::text('{{field.name}}', null, $attributes = $errors->has('{{field.name}}') ? array('class'=>' form-control error') : array('class'=>' form-control')) }}
+    @if ($errors->has('{{field.name}}'))
+        <span class="help-block">{{ $errors->first('{{field.name}}', ':message') }}</span>
+    @endif
+
 </div>

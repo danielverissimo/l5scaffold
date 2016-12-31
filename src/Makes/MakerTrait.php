@@ -175,9 +175,21 @@ trait MakerTrait
         {
             return './app/Http/Controllers/' . $file_name . '.php';
         }
+        elseif($path == "service")
+        {
+            return './app/Services/'.$file_name.'.php';
+        }
+        elseif($path == "repository")
+        {
+            return './app/Repositories/'.$file_name.'.php';
+        }
+        elseif($path == "provider")
+        {
+            return './app/Providers/'.$file_name.'.php';
+        }
         elseif($path == "model")
         {
-            return './app/'.$file_name.'.php';
+            return './app/Models/'.$file_name.'.php';
         }
         elseif($path == "seed")
         {

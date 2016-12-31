@@ -11,9 +11,12 @@ use Laralib\L5scaffold\Makes\MakeLayout;
 use Laralib\L5scaffold\Makes\MakeLocalization;
 use Laralib\L5scaffold\Makes\MakeMigration;
 use Laralib\L5scaffold\Makes\MakeModel;
+use Laralib\L5scaffold\Makes\MakeProvider;
+use Laralib\L5scaffold\Makes\MakeRepository;
 use Laralib\L5scaffold\Makes\MakeRoute;
 use Laralib\L5scaffold\Makes\MakerTrait;
 use Laralib\L5scaffold\Makes\MakeSeed;
+use Laralib\L5scaffold\Makes\MakeService;
 use Laralib\L5scaffold\Makes\MakeView;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -89,9 +92,13 @@ class ScaffoldMakeCommand extends Command
         $this->makeSeed();
         $this->makeModel();
         $this->makeController();
+        $this->makeService();
+        $this->makeRepository();
+        $this->makeProvider();
+
         // $this->makeLocalization(); //ToDo - implement in future version
         $this->makeViews();
-        $this->makeViewLayout();
+//        $this->makeViewLayout();
 
         $this->line("\n----------- $footer -----------");
         $this->comment("----------- $dump -----------");
@@ -144,6 +151,36 @@ class ScaffoldMakeCommand extends Command
     private function makeController()
     {
         new MakeController($this, $this->files);
+    }
+
+    /**
+     * Make a Service with default actions
+     *
+     * @return void
+     */
+    private function makeService()
+    {
+        new MakeService($this, $this->files);
+    }
+
+    /**
+     * Make a Repository with default actions
+     *
+     * @return void
+     */
+    private function makeRepository()
+    {
+        new MakeRepository($this, $this->files);
+    }
+
+    /**
+     * Make a Provider
+     *
+     * @return void
+     */
+    private function makeProvider()
+    {
+        new MakeProvider($this, $this->files);
     }
     
     /**
