@@ -147,6 +147,9 @@ class MakeView
         $data['field.name'] = $options['name'];
         $data['field.Name'] = ucwords($options['name']);
         $data['field.type'] = @$options['type'];
+        $data['field.NamePrint'] = str_replace('_id', '', $data['field.Name']);
+        $data['field.NamePrints'] = str_plural(str_replace('_id', '', $data['field.Name']));
+        $data['field.route'] = str_plural(str_replace('_id', '', $options['name']));
         $data['field.value.default'] = @$options['options']['default'];
 
         return $data;

@@ -1,9 +1,13 @@
-<div class="form-group {{ $errors->has('{{field.name}}') ? 'has-error' : '' }}">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="form-group {{ $errors->has('{{field.name}}') ? 'has-error' : '' }}">
 
-    {!! Form::label('{{field.name}}', '{{field.Name}}:') !!}
-    {{ Form::textarea('{{field.name}}', null, $attributes = $errors->has('{{field.name}}') ? array('class'=>' form-control error') : array('class'=>' form-control')) }}
-    @if ($errors->has('{{field.name}}'))
-        <span class="help-block">{{ $errors->first('{{field.name}}', ':message') }}</span>
-    @endif
+            {!! Form::label('{{field.name}}', '{{field.Name}}:') !!}
+            {{ Form::textarea('{{field.name}}', null, $attributes = $errors->has('{{field.name}}') ? array('class'=>' form-control error') : array('class'=>' form-control')) }}
+            @if ($errors->has('{{field.name}}'))
+                <span class="help-block">{{ $errors->first('{{field.name}}', ':message') }}</span>
+            @endif
 
+        </div>
+    </div>
 </div>
