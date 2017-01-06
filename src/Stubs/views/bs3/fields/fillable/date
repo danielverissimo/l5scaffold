@@ -8,7 +8,7 @@
                     {!! Form::label('{{field.Name}}', 'Date:') !!}
                     <div class="input-group">
                         <div style="position: relative">
-                            {{ Form::date('{{field.name}}', null, $attributes = $errors->has('{{field.name}}') ? array('class'=>'form-control error date-picker mask', 'data-mask' => '00/00/0000') : array('class'=>'form-control date-picker mask', 'data-mask' => '00/00/0000')) }}
+                            {{ Form::date('{{field.name}}', $item->{{field.name}}, $attributes = $errors->has('{{field.name}}') ? array('class'=>'form-control error date-picker mask', 'data-mask' => '00/00/0000') : array('class'=>'form-control date-picker mask', 'data-mask' => '00/00/0000')) }}
                         </div>
                         @if ($errors->has('{{field.name}}'))
                             <span class="help-block">{{ $errors->first('{{field.name}}', ':message') }}</span>

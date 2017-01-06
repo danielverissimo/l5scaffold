@@ -4,9 +4,9 @@
 
     <section class="panel panel-default panel-tabs">
         @if ($item->exists)
-            {!! Form::open(['url' => '{{models}}']) !!}
+            {!! Form::model($item, ['route' => ['{{models}}.update', $item->id], 'method' => 'PUT']) !!}
         @else
-            {!! Form::model($item, ['url' => '{{models}}', $item->id]) !!}
+            {!! Form::open(['url' => '{{models}}']) !!}
         @endif
 
             @include('partials.header_form', ['modelName' => '{{Models}}'])
