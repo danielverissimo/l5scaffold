@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\User\{{Model}}ServiceInterface;
+use App\Traits\CrudTraitApi;
+
+class {{Model}}Controller extends Controller
+{
+
+    use CrudTraitApi;
+
+    protected $service;
+    /**
+     * Create a new controller instance.
+     *
+     * @param {{Model}}ServiceInterface $users
+     */
+    public function __construct(\App\Services\{{Model}}ServiceInterface $service)
+    {
+        $this->service = $service;
+
+        $this->middleware('auth:api');
+
+    }
+}

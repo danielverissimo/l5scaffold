@@ -5,21 +5,20 @@ namespace Laralib\L5scaffold\Commands;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Input;
 use Laralib\L5scaffold\Makes\MakeController;
+use Laralib\L5scaffold\Makes\MakeControllerApi;
 use Laralib\L5scaffold\Makes\MakeLayout;
 use Laralib\L5scaffold\Makes\MakeLocalization;
 use Laralib\L5scaffold\Makes\MakeMigration;
 use Laralib\L5scaffold\Makes\MakeModel;
 use Laralib\L5scaffold\Makes\MakeProvider;
 use Laralib\L5scaffold\Makes\MakeRepository;
-use Laralib\L5scaffold\Makes\MakeRoute;
 use Laralib\L5scaffold\Makes\MakerTrait;
 use Laralib\L5scaffold\Makes\MakeSeed;
 use Laralib\L5scaffold\Makes\MakeService;
 use Laralib\L5scaffold\Makes\MakeView;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class ScaffoldMakeCommand extends Command
 {
@@ -92,11 +91,12 @@ class ScaffoldMakeCommand extends Command
         $this->makeSeed();
         $this->makeModel();
         $this->makeController();
+        $this->makeControllerApi();
         $this->makeService();
         $this->makeRepository();
         $this->makeProvider();
 
-        // $this->makeLocalization(); //ToDo - implement in future version
+        // $this->makeLocalization(); //TODO - implement in future version
         $this->makeViews();
 //        $this->makeViewLayout();
 
@@ -151,6 +151,16 @@ class ScaffoldMakeCommand extends Command
     private function makeController()
     {
         new MakeController($this, $this->files);
+    }
+
+    /**
+     * Make a API Controller with default actions
+     *
+     * @return void
+     */
+    private function makeControllerApi()
+    {
+        new MakeControllerApi($this, $this->files);
     }
 
     /**
