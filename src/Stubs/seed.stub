@@ -10,6 +10,52 @@ class {{Model}}TableSeeder extends Seeder {
     public function run()
     {
         // TestDummy::times(20)->create('App\{{Model}}');
-    }
 
+        DB::table('roles')->insert([
+            'name' => '{{Models}}',
+            'display_name' => '{{Models}}',
+            'description' => '{{Models}}',
+            'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+        $roleId = DB::getPdo()->lastInsertId();
+
+        DB::table('permissions')->insert([
+            'name' => '{{models}}.index',
+            'display_name' => '{{Model}} Index',
+            'description' => '{{Model}} Index',
+            'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+        $permissionId = DB::getPdo()->lastInsertId();
+
+        DB::table('permission_role')->insert([
+            'permission_id' => $permissionId,
+            'role_id' => $roleId
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => '{{models}}.create',
+            'display_name' => '{{Model}} Create',
+            'description' => '{{Model}} Create',
+            'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+        $permissionId = DB::getPdo()->lastInsertId();
+
+        DB::table('permission_role')->insert([
+            'permission_id' => $permissionId,
+            'role_id' => $roleId
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => '{{models}}.edit',
+            'display_name' => '{{Model}} Edit',
+            'description' => '{{Model}} Edit',
+            'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+        $permissionId = DB::getPdo()->lastInsertId();
+
+        DB::table('permission_role')->insert([
+            'permission_id' => $permissionId,
+            'role_id' => $roleId
+        ]);
+    }
 }
