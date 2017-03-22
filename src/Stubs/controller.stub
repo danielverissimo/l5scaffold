@@ -30,6 +30,5 @@ class {{Model}}Controller extends Controller
         $this->{{models}} = ${{models}};
         $this->service = $service;
         $this->middleware('auth');
-
     }
 }

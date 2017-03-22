@@ -1,9 +1,9 @@
 <?php namespace App\Repositories;
 
-use App\Traits\Firework\CrudTrait;
+use App\Traits\Firework\RepositoryCrudTrait;
 
 class {{Model}}Repository implements {{Model}}RepositoryInterface {
 
-    use CrudTrait;
+    use RepositoryCrudTrait;
 
 }
