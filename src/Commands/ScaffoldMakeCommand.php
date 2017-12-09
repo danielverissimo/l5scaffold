@@ -355,4 +355,9 @@ class ScaffoldMakeCommand extends Command
 
         return $names[$config];
     }
+    
+     public function handle()
+    {
+        $this->fire();
+    }
 }
