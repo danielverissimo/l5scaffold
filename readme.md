@@ -38,6 +38,11 @@ php artisan make:scaffold Tweet \
 	--ui="bs3" \
 	--prefix="admin"
 ```
+To generate based on migration:
+
+```
+php artisan make:scaffold MigrationClass --migration=MigrationClass
+```
 
 This command will generate:
 
