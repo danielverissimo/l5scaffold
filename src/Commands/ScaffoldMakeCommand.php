@@ -87,7 +87,10 @@ class ScaffoldMakeCommand extends Command
         $this->line("\n----------- $header -----------\n");
 
         $this->makeMeta();
-        $this->makeMigration();
+        if ( !$this->options()['migration'] ) {
+            $this->makeMigration();
+        }
+
         $this->makeSeed();
         $this->makeModel();
         $this->makeController();
@@ -96,7 +99,7 @@ class ScaffoldMakeCommand extends Command
         $this->makeRepository();
         $this->makeProvider();
 
-        // $this->makeLocalization(); //TODO - implement in future version
+//         $this->makeLocalization(); //TODO - implement in future version
         $this->makeViews();
 //        $this->makeViewLayout();
 
@@ -128,10 +131,97 @@ class ScaffoldMakeCommand extends Command
         $this->meta['model'] = $this->getObjName('name');
         $this->meta['models'] = $this->getObjName('names');
         $this->meta['ModelMigration'] = "Create{$this->meta['Models']}Table";
-
-        $this->meta['schema'] = $this->option('schema');
         $this->meta['prefix'] = ($prefix = $this->option('prefix')) ? "$prefix." : "";
+
+        if ( $this->options()['migration'] ) {
+            $this->meta['schema'] = $this->makeSchemaMigration();
+        }else{
+            $this->meta['schema'] = $this->option('schema');
+        }
     }
+
+    protected function makeSchemaMigration(){
+
+        $excludes = array('foreign', 'comment', 'timestamps', 'softDeletes');
+        $reflector = new \ReflectionClass($this->argument('name'));
+        $fileName = $reflector->getFileName();
+        $content = $this->files->get($fileName);
+
+        // Match function up
+        $re = '/function\s+up+.*?(\(+.*?\))\s*+({([^}]*)})/m';
+        preg_match($re, $content, $matches);
+        $functionUp = $matches[0];
+
+        $re = '/\'\s*(.*?)\s*\'/m';
+        preg_match($re, $functionUp, $matches);
+        $this->meta['var_name'] = $this->camelize($matches[1], '_');
+
+        $this->meta['Model'] = $this->getObjNameMigration('Name');
+        $this->meta['Models'] = $this->getObjNameMigration('Names');
+        $this->meta['model'] = $this->getObjNameMigration('name');
+        $this->meta['models'] = $this->getObjNameMigration('names');
+
+        // Match all columns starts with '$table->'
+        $re = '/^\n*\t*\s*\$table-.*;/m';
+        preg_match_all($re, $functionUp, $matches);
+        $columns = $matches[0];
+
+        $fields = array();
+        foreach ($columns as $column){
+
+            // Match all column fields
+            $re = '/->\w+/m';
+            preg_match_all($re, $column, $matches);
+            $types = $matches[0];
+
+            $field = array();
+            $exclude = false;
+            foreach ($types as $type){
+
+                $type = str_replace('->', '', $type);
+
+                // Match all values
+                $re = '/' . $type . '\s*\([^;)]*\)/m'; // Ex: decimal('amount', 5, 2)
+                preg_match($re, $column, $matches);
+                $values = $matches[0];
+
+                $re = '/' . $type . '\s*\(/';
+                $values = str_replace(["'", ")", "]", "["], '', preg_replace($re, '', $values));
+                $values = !empty($values) ? array_filter( preg_replace( ['/^\s*/', '/$\s/'], '', explode(',', $values)) ) : null;
+
+                if ( in_array($type, $excludes) ){
+                    $exclude = true;
+                }
+
+                if ( empty($values) ){
+                    if ( !$exclude ) {
+                        $field[] = $type;
+                    }
+                }else if ( count($values) == 1 ){
+
+                    if ( !$exclude ){
+                        $field[] = $values[0] . ':' . $type;
+                    }
+
+                }else{
+                    $name = array_splice($values, 0, 1);
+                    $field[] = $name[0] . ':' . $type . '(' . implode(',', $values) . ')';
+                }
+
+            }
+
+            if ( !empty($field) ){
+                $fields[] = implode(':', $field);
+            }
+        }
+
+        return implode(',', $fields);
+    }
+
+    public function camelize($input, $separator = '_'){
+        return str_replace($separator, '', ucwords($input, $separator));
+    }
+
 
     /**
      * Generate the desired migration.
@@ -267,7 +357,7 @@ class ScaffoldMakeCommand extends Command
             [
                 'schema',
                 's',
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_OPTIONAL,
                 'Schema to generate scaffold files. (Ex: --schema="title:string")',
                 null
             ],
@@ -312,6 +402,13 @@ class ScaffoldMakeCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Generate schema with prefix',
                 false
+            ],
+            [
+                'migration',
+                'm',
+                InputOption::VALUE_OPTIONAL,
+                'Generate schema with prefix',
+                false
             ]
         ];
     }
@@ -336,7 +433,12 @@ class ScaffoldMakeCommand extends Command
     public function getObjName($config = 'Name')
     {
         $names = [];
-        $args_name = $this->argument('name');
+
+        if ( isset($this->meta['var_name']) && $this->options()['migration'] ){
+            $args_name =  $this->meta['var_name'];
+        }else{
+            $args_name =  $this->argument('name');
+        }
 
         // Name[0] = Tweet
         $names['Name'] = str_singular(ucfirst($args_name));
@@ -355,8 +457,38 @@ class ScaffoldMakeCommand extends Command
 
         return $names[$config];
     }
-    
-     public function handle()
+
+    /**
+     * Generate names
+     *
+     * @param string $config
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getObjNameMigration($config = 'Name')
+    {
+        $names = [];
+        $name = $this->getMeta()['var_name'];
+
+        // Name[0] = Tweet
+        $names['Name'] = str_singular(ucfirst($name));
+        // Name[1] = Tweets
+        $names['Names'] = str_plural(ucfirst($name));
+        // Name[2] = tweets
+        $names['names'] = str_plural(strtolower(preg_replace('/(?<!^)([A-Z])/', '_$1', $name)));
+        // Name[3] = tweet
+        $names['name'] = str_singular(strtolower(preg_replace('/(?<!^)([A-Z])/', '_$1', $name)));
+
+
+        if (!isset($names[$config]))
+        {
+            throw new \Exception("Position name is not found");
+        };
+
+        return $names[$config];
+    }
+
+    public function handle()
     {
         $this->fire();
     }

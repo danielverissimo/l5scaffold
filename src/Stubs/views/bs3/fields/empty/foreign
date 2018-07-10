@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="form-group {{ $errors->has('{{field.name}}') ? 'has-error' : '' }}">
+
+            <label for="{{field.name}}_name" class="control-label">{{field.NamePrint}}
+                <i class="fa fa-info-circle"
+                   data-toggle="popover"
+                   data-content="Informe {{field.NamePrint}} aqui"
+                   data-original-title="{{field.NamePrint}}" title="{{field.NamePrint}}"></i>
+            </label>
+            <div class="input-group">
+
+                <div style="position: relative">
+                    {{ Form::text('{{field.name}}_name', $item->exists ? $item->{{field.name}}->id : null, $attributes = $errors->has('{{field.name}}') ? array('class'=>' form-control error', 'readonly' => 'true') : array('class'=>' form-control', 'readonly' => 'true')) }}
+                    {{ Form::hidden('{{field.name}}', $item->exists ? $item->{{field.name}}->id : null) }}
+                </div>
+
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#grid-modal-{{field.name}}">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
+                    <button type="button" class="btn btn-danger clear-data">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </span>
+
+            </div>
+
+            @if ($errors->has('{{field.name}}'))
+                <span class="help-block">{{ $errors->first('{{field.name}}', ':message') }}</span>
+            @endif
+
+            <script type="text/javascript">
+
+                function modalSelectItem_{{field.Name}}(item){
+                    $('input[name={{field.name}}_name]').val(item.name);
+                    $('input[name={{field.name}}]').val(item.id);
+                }
+
+            </script>
+
+            <grid-modal source="{{url('/{{field.route}}')}}" token="{{csrf_token()}}" name="{{field.NamePrints}}" callback="modalSelectItem_{{field.Name}}" id="grid-modal-{{field.name}}"></grid-modal>
+
+        </div>
+    </div>
+</div>

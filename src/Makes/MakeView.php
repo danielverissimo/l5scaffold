@@ -55,9 +55,9 @@ class MakeView
     protected function getSchemaArray()
     {
         // ToDo - schema is required?
-        if($this->scaffoldCommandObj->option('schema') != null)
+        if($this->scaffoldCommandObj->getMeta()['schema'] != null)
         {
-            if ($schema = $this->scaffoldCommandObj->option('schema'))
+            if ($schema = $this->scaffoldCommandObj->getMeta()['schema'])
             {
                 return (new SchemaParser)->parse($schema);
             }
